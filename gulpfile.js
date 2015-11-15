@@ -1,50 +1,47 @@
 'use strict';
 
 var gulp = require('gulp'),
+    refresh = require('gulp-livereload'),
+    nodemon = require('gulp-nodemon'),
     _ = require('lodash'),
     // jshint = require('gulp-jshint'),
     // jscs = require('gulp-jscs'),
-    nodemon = require('gulp-nodemon'),
-    livereload = require('gulp-livereload'),
-    webpack = require('webpack');
+    webpack = require('gulp-webpack');
 
 var paths = {
-  front: ['app/**/*.js'],
-  back: []
+  front: {
+    html: ['app/**/*.html'],
+    scripts: ['app/**/*.js'],
+    styles: ['app/**/*.css']
+  },
+  back: ['server/**/*.js']
 };
 
-gulp.task('webpack', function(cb) {
-  webpack({
-    entry: './app/script',
-    output: {
-      path: __dirname + '/dist',
-      filename: 'bundle.js'
-    }
-  }, cb);
+gulp.task('webpack', function() {
+  gulp.src('./app/script')
+    .pipe(webpack({
+      entry: {filename: './app/script'},
+      output: {filename: 'bundle.js'}
+    }))
+    .pipe(gulp.dest('./dist/'))
+    .pipe(refresh());
 });
 
 gulp.task('copy', function() {
   return gulp.src(['app/index.html', 'app/stylesheet.css'])
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('./dist/'))
+    .pipe(refresh());
 });
 
-gulp.task('reload', function() {
-  console.log('reloading');
-  livereload();
+gulp.task('serve', function() {
+  nodemon({script: 'server/server.js'});
 });
 
-gulp.task('watch', function() {
-  livereload.listen();
-  gulp.watch('dist', ['reload']);
-});
-
-gulp.task('server', function() {
-  nodemon({
-    script: 'index.js',
-    ext: 'js html',
-    watch: ['app', 'index.js', 'gulpfile.js']
-  }).on('change', ['build', 'watch']);
+gulp.task('watch', function(){
+  refresh.listen();
+  // gulp.watch(_.flatten(paths.front.html, paths.front.css), ['copy']);
+  gulp.watch(paths.front.scripts, ['webpack']);
 });
 
 gulp.task('build', ['webpack', 'copy']);
-gulp.task('default', ['build', 'server']);
+gulp.task('default', ['build', 'serve', 'watch']);
