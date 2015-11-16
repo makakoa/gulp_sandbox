@@ -47,7 +47,10 @@ gulp.task('copy', function() {
 });
 
 gulp.task('serve', function() {
-  nodemon({script: 'server/server.js'});
+  nodemon({
+    script: 'server/server.js',
+    watch: ['server.js']
+  });
 });
 
 gulp.task('watch', function() {
