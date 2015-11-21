@@ -12,7 +12,7 @@ var paths = {
   gulp: 'gulpfile.js',
   front: {
     html: ['app/**/*.html'],
-    scripts: ['app/**/*.js'],
+    scripts: ['app/**/*.js', 'lib/**/*.js'],
     styles: ['app/**/*.css']
   },
   back: ['server/**/*.js']

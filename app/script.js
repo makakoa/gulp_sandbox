@@ -2,23 +2,31 @@
 
 var _ = require('lodash');
 
+var observable = require('../lib/observable'),
+    stream = require('../lib/stream'),
+    promise = require('../lib/promise'),
+    assert = require('../lib/assert'),
+    emitter = require('../lib/emitter');
+
 console.log('---Sandox---');
 
 window.onload = function() {
 
   var mainEl = document.getElementById('app');
-
+  assert(mainEl, 'Could not find main element');
   console.log(mainEl);
 
-  addText(mainEl, 'hello ' + Math.floor(Math.random() * 100));
+  var o = observable('hello');
+  console.log('get', o.get());
+  o.onChange(function(v) {
+    console.log('change', v);
+  });
+  o.set('goodbye');
+  console.log('last', o.get());
+
+
+  addText(mainEl, 'hello ' + Math.floor(Math.random() * 1000));
   setAttrs(mainEl, {class: 'lead'});
-
-  var div = el('div');
-  mainEl.appendChild(div);
-  addText(div, 'holla');
-
-  console.log(div);
-  clear(div);
 };
 
 console.log('element', document.createElement('Test-Element'));
