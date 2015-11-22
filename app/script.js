@@ -2,11 +2,11 @@
 
 var _ = require('lodash');
 
-var observable = require('../lib/observable'),
-    stream = require('../lib/stream'),
-    promise = require('../lib/promise'),
-    assert = require('../lib/assert'),
-    emitter = require('../lib/emitter');
+var observable = require('../lib/observable');
+// var stream = require('../lib/stream');
+// var promise = require('../lib/promise');
+var assert = require('../lib/assert');
+// var emitter = require('../lib/emitter');
 
 console.log('---Sandox---');
 
@@ -16,17 +16,20 @@ window.onload = function() {
   assert(mainEl, 'Could not find main element');
   console.log(mainEl);
 
-  var o = observable('hello');
-  console.log('get', o.get());
-  o.onChange(function(v) {
-    console.log('change', v);
-  });
-  o.set('goodbye');
-  console.log('last', o.get());
+  var timeEl = el('timer');
+  setAttrs(timeEl, {class: 'lead'});
 
+  var timer = observable(Date.now());
+  window.setInterval(function() {
+    timer.set(Date.now());
+  }, 453);
+  timer.onChange(function(v) {
+    timeEl.innerText = v;
+  });
 
   addText(mainEl, 'hello ' + Math.floor(Math.random() * 1000));
-  setAttrs(mainEl, {class: 'lead'});
+  setAttrs(mainEl, {class: 'h1'});
+  mainEl.appendChild(timeEl);
 };
 
 console.log('element', document.createElement('Test-Element'));
